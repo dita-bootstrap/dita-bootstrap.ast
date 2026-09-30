@@ -10,20 +10,15 @@
 >
 
   <xsl:template match="*[contains(@class, ' topic/topic ')]" mode="json-meta">
+    <xsl:variable name="shortdesc-element" as="element()?">
+      <xsl:sequence
+        select="(*[contains(@class, ' topic/shortdesc ')],
+                 *[contains(@class, ' topic/abstract ')]/*[contains(@class, ' topic/shortdesc ')],
+                 *[contains(@class, ' glossentry/glossdef ')])[1]"
+      />
+    </xsl:variable>
     <xsl:variable name="shortdesc-text" as="xs:string?" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-      <xsl:choose>
-        <xsl:when test="*[contains(@class, ' topic/shortdesc ')]">
-          <xsl:sequence select="string(*[contains(@class, ' topic/shortdesc ')][1])"/>
-        </xsl:when>
-        <xsl:when test="*[contains(@class, ' topic/abstract ')]/*[contains(@class, ' topic/shortdesc ')]">
-          <xsl:sequence
-            select="string(*[contains(@class, ' topic/abstract ')][1]/*[contains(@class, ' topic/shortdesc ')][1])"
-          />
-        </xsl:when>
-        <xsl:when test="*[contains(@class, ' glossentry/glossdef ')]">
-          <xsl:sequence select="string(*[contains(@class, ' glossentry/glossdef ')][1])"/>
-        </xsl:when>
-      </xsl:choose>
+      <xsl:sequence select="string($shortdesc-element)[exists($shortdesc-element)]"/>
     </xsl:variable>
     <!-- search-only synonyms; never rendered, so this is the AST's only representation of them -->
     <xsl:variable
@@ -40,9 +35,20 @@
     />
     <ast:meta>
       <ast:prop name="title" value="{string(*[contains(@class, ' topic/title ')][1])}"/>
+      <!-- markup-bearing titles only; plain-text titles need just the string above -->
+      <xsl:if test="*[contains(@class, ' topic/title ')][1]/*">
+        <ast:prop-nodes name="titleAst">
+          <xsl:apply-templates select="*[contains(@class, ' topic/title ')][1]/(* | text())"/>
+        </ast:prop-nodes>
+      </xsl:if>
       <ast:prop name="lang" value="{$effective-lang}"/>
       <xsl:if test="$shortdesc-text">
         <ast:prop name="shortdesc" value="{$shortdesc-text}"/>
+      </xsl:if>
+      <xsl:if test="$shortdesc-element/*">
+        <ast:prop-nodes name="shortdescAst">
+          <xsl:apply-templates select="$shortdesc-element/(* | text())"/>
+        </ast:prop-nodes>
       </xsl:if>
       <xsl:if test="$indexterms">
         <ast:prop-array name="keywords">

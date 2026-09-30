@@ -81,6 +81,13 @@
     </fn:array>
   </xsl:template>
 
+  <!-- one ast:prop-nodes -> one fn:array of nodes/text, for meta props holding inline AST (titleAst) -->
+  <xsl:template match="ast:prop-nodes" mode="to-fn-json-prop">
+    <fn:array key="{@name}">
+      <xsl:apply-templates select="(ast:node | ast:text)" mode="to-fn-json"/>
+    </fn:array>
+  </xsl:template>
+
   <!-- per-topic document envelope: {"meta": {...}, "content": [tuples], "scrollspy"?: [tuples]} -->
   <xsl:function name="ast:serialize-document" as="xs:string">
     <xsl:param name="meta" as="element(ast:meta)?"/>
@@ -89,7 +96,7 @@
     <xsl:variable name="tree" as="element(fn:map)">
       <fn:map>
         <fn:map key="meta">
-          <xsl:apply-templates select="$meta/(ast:prop | ast:prop-array)" mode="to-fn-json-prop"/>
+          <xsl:apply-templates select="$meta/(ast:prop | ast:prop-array | ast:prop-nodes)" mode="to-fn-json-prop"/>
         </fn:map>
         <fn:array key="content">
           <xsl:apply-templates select="$content" mode="to-fn-json"/>
