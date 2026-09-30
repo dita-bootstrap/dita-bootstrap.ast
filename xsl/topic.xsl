@@ -45,8 +45,11 @@
         select="$root-topic/*[contains(@class, ' glossentry/glossdef ') or contains(@class, ' topic/abstract ')]"
       />
       <xsl:apply-templates select="$root-topic/*[contains(@class, ' topic/body ')]/*"/>
-      <!-- nested topics are siblings of body -->
-      <xsl:apply-templates select="$root-topic/*[contains(@class, ' topic/topic ')]"/>
+      <xsl:if
+        test="not($root-topic/*[contains(@class, ' topic/body ')]/*[contains(@class, ' topic/object ')][@outputclass = 'swagger-spec'])"
+      >
+        <xsl:apply-templates select="$root-topic/*[contains(@class, ' topic/topic ')]"/>
+      </xsl:if>
     </xsl:variable>
     <xsl:variable name="scrollspy" as="element(ast:node)*">
       <xsl:apply-templates select="$root-topic" mode="scrollspy"/>
@@ -230,6 +233,22 @@
         <xsl:call-template name="common-props"/>
       </ast:props>
       <ast:text><xsl:value-of select="string(.)"/></ast:text>
+    </ast:node>
+  </xsl:template>
+
+  <!-- object/@data referencing a full OpenAPI/Swagger spec (see fox.jason.passthrough.swagger):
+       renders the single spec reference for a React harness to hand to Scalar; the sibling
+       <fallback> exists only for transtypes without a Scalar-aware template of their own (html5,
+       PDF already render/ignore object's children generically) and is deliberately not walked here -
+       the harness gets the whole interactive console instead of a per-endpoint doc dump. -->
+  <xsl:template match="*[contains(@class, ' topic/object ')][@outputclass = 'swagger-spec']">
+    <ast:node type="ScalarApiReference">
+      <ast:props>
+        <ast:prop name="specUrl" value="{@data}"/>
+        <xsl:if test="@type">
+          <ast:prop name="format" value="{@type}"/>
+        </xsl:if>
+      </ast:props>
     </ast:node>
   </xsl:template>
 

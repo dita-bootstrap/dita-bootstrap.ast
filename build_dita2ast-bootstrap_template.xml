@@ -23,6 +23,7 @@ See the accompanying LICENSE file for applicable license.
   />
 
   <target name="ast-bootstrap.init">
+    <property name="passthrough.spec.keep" value="true"/>
     <property
       name="args.xsl"
       value="${dita.plugin.org.dita-bootstrap.ast.dir}/xsl/dita2ast-bootstrap.xsl"
