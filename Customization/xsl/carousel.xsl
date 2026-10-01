@@ -57,11 +57,14 @@
           <xsl:with-param name="stripOutputclass" select="if ($is-specialized) then () else 'carousel'"/>
         </xsl:call-template>
       </ast:props>
-      <xsl:apply-templates select="$items" mode="carousel-item"/>
+      <xsl:apply-templates select="$items" mode="carousel-item">
+        <xsl:with-param name="indicators-on" select="$indicators-on"/>
+      </xsl:apply-templates>
     </ast:node>
   </xsl:template>
 
   <xsl:template match="*[contains(@class, ' topic/li ')]" mode="carousel-item">
+    <xsl:param name="indicators-on" as="xs:boolean" select="false()"/>
     <xsl:variable name="is-specialized" select="contains(@class, ' bootstrap-d/carousel-item ')"/>
     <xsl:variable
       name="item-interval"
@@ -127,6 +130,13 @@
       </xsl:choose>
       <!-- non-image content (e.g. a grid-row of caption text) renders alongside the image(s) as usual -->
       <xsl:apply-templates select="(* except ($images | $figs))[not(contains(@class, ' topic/title '))]"/>
+      <xsl:if test="$indicators-on">
+        <ast:node type="div">
+          <ast:props>
+            <ast:prop name="className" value="row py-3"/>
+          </ast:props>
+        </ast:node>
+      </xsl:if>
     </ast:node>
   </xsl:template>
 
