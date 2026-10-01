@@ -27,6 +27,12 @@ See the accompanying LICENSE file for applicable license.
     <property name="passthrough.spec.keep" value="true"/>
     <property name="build-step.copy-image" value="false"/>
     <property name="build-step.copy-html" value="false"/>
+    <tempfile
+      property="code.languages.file"
+      destdir="${dita.temp.dir}"
+      prefix="code-languages"
+      suffix=".xml"
+    />
     <property
       name="args.xsl"
       value="${dita.plugin.org.dita-bootstrap.ast.dir}/xsl/dita2ast-bootstrap.xsl"
@@ -137,6 +143,11 @@ See the accompanying LICENSE file for applicable license.
   </target>
 
   <target name="ast-bootstrap.map">
+    <makeurl
+      file="${code.languages.file}"
+      property="code.languages.url"
+      validate="no"
+    />
     <ast-bootstrap.map/>
   </target>
 
@@ -209,6 +220,11 @@ See the accompanying LICENSE file for applicable license.
           />
         <param name="HDR" expression="${args.hdr.url}" if:set="args.hdr.url"/>
         <param name="FTR" expression="${args.ftr.url}" if:set="args.ftr.url"/>
+        <param
+            name="PRISMJS_LANGUAGES"
+            expression="${code.languages.url}"
+            if:set="code.languages.url"
+          />
         <param name="nav-toc" expression="${nav-toc}" if:set="nav-toc"/>
         <param
             name="scrollspy-toc"

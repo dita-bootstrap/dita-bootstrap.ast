@@ -22,6 +22,7 @@
   <xsl:param name="DEFAULTLANG" select="'en'"/>
   <xsl:param name="HDR" as="xs:string?"/>
   <xsl:param name="FTR" as="xs:string?"/>
+  <xsl:param name="PRISMJS_LANGUAGES" as="xs:string?"/>
   <xsl:param name="nav-toc" select="'collapsible'"/>
   <xsl:param name="scrollspy-toc" select="'none'"/>
   <xsl:param name="menubar-toc.include" select="'no'"/>
@@ -86,8 +87,13 @@
       name="skip-to-nav"
       select="if (normalize-space(string($skip-to-nav-rtf))) then string($skip-to-nav-rtf) else 'Skip to docs navigation'"
     />
+    <xsl:variable name="code-languages" as="xs:string*">
+      <xsl:if test="normalize-space($PRISMJS_LANGUAGES) and doc-available($PRISMJS_LANGUAGES)">
+        <xsl:sequence select="doc($PRISMJS_LANGUAGES)//language/string()"/>
+      </xsl:if>
+    </xsl:variable>
     <xsl:value-of
-      select="ast:serialize-toc($entries, normalize-space($doc-title), $nav-toc, $scrollspy-toc, $effective-lang, $header-ast, $footer-ast, $skip-to-main, $skip-to-nav, $menubar-toc.include = 'yes')"
+      select="ast:serialize-toc($entries, normalize-space($doc-title), $nav-toc, $scrollspy-toc, $effective-lang, $header-ast, $footer-ast, $skip-to-main, $skip-to-nav, $menubar-toc.include = 'yes', $code-languages)"
     />
     <xsl:text>&#10;</xsl:text>
   </xsl:template>

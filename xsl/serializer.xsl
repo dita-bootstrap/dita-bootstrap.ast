@@ -113,7 +113,7 @@
     <xsl:sequence select="xml-to-json($tree)"/>
   </xsl:function>
 
-  <!-- merged TOC document envelope: {"toc": [tuples], "title": "...", "navToc": "...", "scrollspyToc": "...", "lang": "...", "header"?: [...], "footer"?: [...], "accessibility"?: {...}} -->
+  <!-- merged TOC document envelope: {"toc": [tuples], "title": "...", "navToc": "...", "scrollspyToc": "...", "lang": "...", "header"?: [...], "footer"?: [...], "accessibility"?: {...}, "codeLanguages"?: [...]} -->
   <xsl:function name="ast:serialize-toc" as="xs:string">
     <xsl:param name="entries" as="element(ast:node)*"/>
     <xsl:param name="title" as="xs:string"/>
@@ -125,6 +125,7 @@
     <xsl:param name="skip-to-main" as="xs:string?"/>
     <xsl:param name="skip-to-nav" as="xs:string?"/>
     <xsl:param name="menubar" as="xs:boolean?"/>
+    <xsl:param name="code-languages" as="xs:string*"/>
     <xsl:variable name="tree" as="element(fn:map)">
       <fn:map>
         <fn:array key="toc">
@@ -160,6 +161,13 @@
           <xsl:apply-templates select="$footer" mode="to-fn-json-key">
             <xsl:with-param name="keyName" select="'footer'"/>
           </xsl:apply-templates>
+        </xsl:if>
+        <xsl:if test="exists($code-languages)">
+          <fn:array key="codeLanguages">
+            <xsl:for-each select="$code-languages">
+              <fn:string><xsl:value-of select="."/></fn:string>
+            </xsl:for-each>
+          </fn:array>
         </xsl:if>
       </fn:map>
     </xsl:variable>
