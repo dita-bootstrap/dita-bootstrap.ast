@@ -62,7 +62,7 @@ dita --input=path/to/document.ditamap \
 ```
 
 This produces a zip file containing one JSON file per topic plus a merged `toc.json`, which the React Web service can fetch and
-render - see [DITA Bootstrap AST Harness](https://github.com/jason-fox/dita-bootstrap.react) for a working example.
+render - see [DITA Bookshelf](https://github.com/dita-bootstrap/dita-bootstrap.react) for a working example.
 
 ### `ast-chrome` Transtype
 
