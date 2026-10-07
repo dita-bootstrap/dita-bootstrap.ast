@@ -1,6 +1,6 @@
 # DITA Bootstrap AST
 
-_DITA Bootstrap AST_ is a [DITA Open Toolkit plug-in](https://www.dita-ot.org/plugins) that walks the same preprocessed topic/map tree as the [DITA Bootstrap](https://dita-bootstrap.github.io) HTML5 transtype, but instead of emitting HTML it serializes each topic (plus a merged TOC) as `[type, props?, ...children]` JSON tuples, shaped so a React app can render them with real `react-bootstrap` components instead of raw HTML.
+_DITA Bootstrap AST_ is a [DITA Open Toolkit plug-in](https://www.dita-ot.org/plugins) that walks the same preprocessed topic/map tree as the [DITA Bootstrap](https://dita-bootstrap.org/html) HTML5 transtype, but instead of emitting HTML it serializes each topic (plus a merged TOC) as `[type, props?, ...children]` JSON tuples, shaped so a React app can render them with real `react-bootstrap` components instead of raw HTML.
 
 Adopting a structured JSON AST (Abstract Syntax Tree) with a React rendering harness shift the documentation generation towards an application-centric model. The advantage of an AST + React Approach include a complete decoupling the presentation layer from the
 documentation semantic and because the React harness uses components like react-bootstrap, the documentation automatically inherits the exact web application styling, typography, and theme tokens without CSS overrides.
@@ -95,7 +95,7 @@ The output `chrome.json` contains:
 
 ## Parameters
 
-Unlike [DITA Bootstrap](https://dita-bootstrap.github.io)'s HTML5 transtype, this plug-in doesn't render any of the
+Unlike [DITA Bootstrap](https://dita-bootstrap.org/html)'s HTML5 transtype, this plug-in doesn't render any of the
 variants below itself - it serializes the DITA-OT input parameter value through to the JSON output as-is, and it's
 up to the consuming React app to decide how to render it.
 
